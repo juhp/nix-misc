@@ -1,0 +1,2 @@
+nix is a shell-script wrapper around nix-env which makes it
+feel closer to apt-get or yum.
