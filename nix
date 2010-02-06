@@ -5,6 +5,7 @@ if [ $# -lt 1 ]; then
   echo "       nix binary [PKG] ... - list binary substitute packages"
   echo "       nix search PKGREGEXP - search available packages"
   echo "       nix info PKG ...     - show package info"
+  echo "       nix xml PKG ...      - show package info"
   echo "       nix install PKG ...  - install package"
   echo "       nix update [PKG] ... - update package"
   echo "       nix remove PKG ...   - remove package"
@@ -101,7 +102,7 @@ case $CMD in
 	    echo Usage: nix locate FILEEXP
 	    exit 1
 	fi
-	echo locate $ARGS | sed -e "s%^/nix/store/[^-]\+-%%g"
+	locate /nix/store/*$ARGS* | sed -e "s%^/nix/store/[^-]\+-%%g"
 	;;
     *)
 	echo "No such command: run 'nix' for usage"
