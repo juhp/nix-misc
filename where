@@ -7,11 +7,13 @@ fi
 
 PROG=$(type -p $1)
 
-if [ -n "$PROG" ]; then
-    echo -n $PROG
-    if [ -L "$PROG" ]; then
+FILE=${PROG:-$1}
+
+if [ -e "$FILE" ]; then
+    echo -n $FILE
+    if [ -L "$FILE" ]; then
 	echo -n " -> "
-	readlink -en $PROG
+	readlink -en $FILE
     fi
     echo
 fi
