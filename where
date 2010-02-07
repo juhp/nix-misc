@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo "Usage: where program"
+    exit 1
+fi
+
+PROG=$(type -p $1)
+
+if [ -n "$PROG" ]; then
+    echo -n $PROG
+    if [ -L "$PROG" ]; then
+	echo -n " -> "
+	readlink -en $PROG
+    fi
+    echo
+fi

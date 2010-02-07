@@ -9,7 +9,6 @@ if [ $# -lt 1 ]; then
   echo "       nix install PKG ...  - install package"
   echo "       nix update [PKG] ... - update package"
   echo "       nix remove PKG ...   - remove package"
-  echo "       nix attrib PKG ...   - show package attribute"
   echo "       nix files PKG ...    - find package's files in store"
   echo "       nix locate FILEEXP   - locate output with store prefix"
   echo "       nix path PKG ...     - show the package's store dir"
@@ -43,7 +42,7 @@ case $CMD in
 	    echo Usage: nix info PKG ...
 	    exit 1
 	fi
-	$QUERY -P --description $ARGS
+	$QUERY -P --description $ARGS | $SHOW_STATE
 	;;
     xml)
 	if [ $# -lt 1 ]; then
@@ -74,14 +73,14 @@ case $CMD in
 	    echo Usage: nix path PKG ...
 	    exit 1
 	fi
-	nix-env -qa --no-name --out-path $ARGS
-	;;
-    attrib)
-	if [ $# -lt 1 ]; then
-	    echo Usage: nix attrib PKG ...
-	    exit 1
+	STORE=`nix-env -qa -P --no-name --out-path $ARGS`
+	if [ -n "$STORE" ]; then
+	    for dir in $STORE; do
+		if [ -d "$dir" ]; then
+		    echo $dir
+		fi
+	    done
 	fi
-	nix-env -qa --no-name -P $ARGS
 	;;
     files)
 	if [ $# -lt 1 ]; then
