@@ -4,8 +4,7 @@ if [ $# -lt 1 ]; then
   echo "Usage: nix list [PKG] ...   - list packages"
   echo "       nix binary [PKG] ... - list binary substitute packages"
   echo "       nix search PKGREGEXP - search available packages"
-  echo "       nix info PKG ...     - show package info"
-  echo "       nix xml PKG ...      - show package info"
+  echo "       nix info PKG ...     - show package xml info"
   echo "       nix install PKG ...  - install package"
   echo "       nix update [PKG] ... - update package"
   echo "       nix remove PKG ...   - remove package"
@@ -19,15 +18,16 @@ CMD=$1
 shift
 ARGS=$*
 
-QUERY='nix-env -qsa'
+QUERY='nix-env -qaP'
+QUERYSTATE="$QUERY -s"
 SHOW_STATE="sed -e s/^.P./Present\t/g -e s/^..S/subst\t/g -e s/^---/\t/g"
 
 case $CMD in
     list)
-	    $QUERY ${ARGS:-\*} | $SHOW_STATE
+	    $QUERYSTATE ${ARGS:-\*} | $SHOW_STATE
 	;;
     binary)
-	    $QUERY -b ${ARGS:-\*} | $SHOW_STATE
+	    $QUERYSTATE -b ${ARGS:-\*} | $SHOW_STATE
 	;;
     search)
 	if [ $# != 1 ]; then
@@ -35,18 +35,12 @@ case $CMD in
 	    exit 1
 	fi
 	PKGREGEXP=$(echo $1 | sed -e "s/\*/\.\*/g")
-	$QUERY \* | grep $PKGREGEXP | $SHOW_STATE
+	# query state of everything too slow
+	$QUERY \* | grep $PKGREGEXP
 	;;
     info)
 	if [ $# -lt 1 ]; then
 	    echo Usage: nix info PKG ...
-	    exit 1
-	fi
-	$QUERY -P --description $ARGS | $SHOW_STATE
-	;;
-    xml)
-	if [ $# -lt 1 ]; then
-	    echo Usage: nix xml PKG ...
 	    exit 1
 	fi
 	$QUERY --xml --meta $ARGS
@@ -73,7 +67,7 @@ case $CMD in
 	    echo Usage: nix path PKG ...
 	    exit 1
 	fi
-	STORE=`nix-env -qa -P --no-name --out-path $ARGS`
+	STORE=`$QUERY --no-name --out-path $ARGS`
 	if [ -n "$STORE" ]; then
 	    for dir in $STORE; do
 		if [ -d "$dir" ]; then
