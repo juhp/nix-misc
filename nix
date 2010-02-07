@@ -2,15 +2,15 @@
 
 if [ $# -lt 1 ]; then
   echo "Usage: nix list [PKG] ...   - list packages"
-  echo "       nix binary [PKG] ... - list binary substitute packages"
   echo "       nix search PKGREGEXP - search available packages"
+  echo "       nix binary [PKG] ... - list binary substitute packages"
   echo "       nix info PKG ...     - show package xml info"
   echo "       nix install PKG ...  - install package"
   echo "       nix update [PKG] ... - update package"
   echo "       nix remove PKG ...   - remove package"
-  echo "       nix files PKG ...    - find package's files in store"
-  echo "       nix locate FILEEXP   - locate output with store prefix"
   echo "       nix path PKG ...     - show the package's store dir"
+  echo "       nix files PKG ...    - list package's files in store root"
+  echo "       nix locate FILEEXP   - locate in store without prefix"
   exit 1
 fi
 
